@@ -1,0 +1,2 @@
+# Product Requirement Document (PRD) - Outgear Lite
+Aplikasi mini rental alat outdoor yang dikemas dengan Docker Compose (Nginx, MariaDB, PHP 8.4-FPM, Worker, Scheduler) untuk pengujian deployment produksi sesuai standar Jobsheet Pemrograman Web Lanjut.
