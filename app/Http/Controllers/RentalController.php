@@ -11,12 +11,13 @@ use Illuminate\Support\Facades\DB;
 class RentalController extends Controller
 {
     public function index()
-    {
-        $items = Item::all();
-        $rentals = Rental::with('item')->latest()->get();
-        return view('welcome', compact('items', 'rentals'));
-    }
+{
+    $items = Item::all();
+    // Ambil semua transaksi urut dari yang terbaru
+    $rentals = Rental::with('item')->latest()->get(); 
 
+    return view('welcome', compact('items', 'rentals'));
+}
     public function storeItem(Request $request)
     {
         $validated = $request->validate([
@@ -60,5 +61,18 @@ class RentalController extends Controller
         });
 
         return redirect()->back()->with('success', 'Transaksi sewa berhasil disimpan dan dikirim ke queue worker!');
+    }
+        public function returnItem(Rental $rental)
+    {
+        if (strtoupper($rental->status) === 'ACTIVE') {
+            $rental->update(['status' => 'RETURNED']);
+
+            // Kembalikan stok barang di master data
+            if ($rental->item) {
+                $rental->item->increment('stock');
+            }
+        }
+
+        return redirect()->back()->with('success', 'Barang berhasil dikembalikan dan stok telah bertambah!');
     }
 }
